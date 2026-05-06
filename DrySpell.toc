@@ -2,7 +2,7 @@
 ## Title: DrySpell
 ## Notes: Tracks LFG declines, delistings, and time-to-accepted across all your characters.
 ## Author: Druiddeleted
-## Version: 0.1.0
+## Version: 0.1.0-alpha1
 ## SavedVariables: DrySpellDB
 ## IconTexture: Interface\Icons\Spell_Holy_DivineSpirit
 ## Category-enUS: Group Tools
