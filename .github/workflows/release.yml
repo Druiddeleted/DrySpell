@@ -40,11 +40,8 @@ jobs:
       - name: Compute packager flags
         id: flags
         run: |
-          # Replace PROJECT_ID below with the CurseForge project ID once the
-          # CurseForge project exists. Until then this workflow will fail at
-          # upload time but still produce a local zip.
           TYPE="${{ github.event.inputs.release_type || 'alpha' }}"
-          PROJECT_ID="REPLACE_WITH_CURSEFORGE_PROJECT_ID"
+          PROJECT_ID="1535059"
           case "$TYPE" in
             alpha)   echo "args=-p $PROJECT_ID -a" >> "$GITHUB_OUTPUT" ;;
             beta)    echo "args=-p $PROJECT_ID -b" >> "$GITHUB_OUTPUT" ;;
