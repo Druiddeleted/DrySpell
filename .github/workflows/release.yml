@@ -1,0 +1,62 @@
+name: Release
+
+# Tag pushes auto-build an alpha. Promote a tag to beta or release by manually
+# dispatching this workflow from the Actions tab and picking the tag + release
+# type.
+on:
+  push:
+    tags:
+      - 'v*'
+      - '[0-9]*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to package (e.g. 0.1.0). Required for manual runs.'
+        required: true
+        type: string
+      release_type:
+        description: 'CurseForge release type'
+        required: true
+        default: 'alpha'
+        type: choice
+        options:
+          - alpha
+          - beta
+          - release
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+          fetch-depth: 0
+
+      - name: Compute packager flags
+        id: flags
+        run: |
+          # Replace PROJECT_ID below with the CurseForge project ID once the
+          # CurseForge project exists. Until then this workflow will fail at
+          # upload time but still produce a local zip.
+          TYPE="${{ github.event.inputs.release_type || 'alpha' }}"
+          PROJECT_ID="REPLACE_WITH_CURSEFORGE_PROJECT_ID"
+          case "$TYPE" in
+            alpha)   echo "args=-p $PROJECT_ID -a" >> "$GITHUB_OUTPUT" ;;
+            beta)    echo "args=-p $PROJECT_ID -b" >> "$GITHUB_OUTPUT" ;;
+            release) echo "args=-p $PROJECT_ID" >> "$GITHUB_OUTPUT" ;;
+            *) echo "Unknown release type: $TYPE" >&2; exit 1 ;;
+          esac
+          echo "Selected: $TYPE"
+
+      - name: Package & upload
+        uses: BigWigsMods/packager@v2
+        with:
+          args: ${{ steps.flags.outputs.args }}
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+          GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}

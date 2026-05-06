@@ -1,0 +1,14 @@
+package-as: DrySpell
+
+# Files/dirs to omit from the published zip.
+ignore:
+  - .github
+  - .gitignore
+  - .pkgmeta
+  - CLAUDE.md
+  - LICENSE.md
+  - README.md
+  - "*.psd"
+  - "*.xcf"
+
+manual-changelog: CHANGELOG.md
